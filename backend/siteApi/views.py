@@ -62,7 +62,7 @@ class Todos (APIView):
         todo = TodoSerializer (request.data, instance = tos)
         if todo.is_valid():
             todo.save()
-            return Response ('Todo created', status = status.HTTP_200_OK)
+            return Response ('Todo updated', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
 
     def get (self, request, pk):
