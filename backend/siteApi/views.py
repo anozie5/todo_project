@@ -74,4 +74,15 @@ class Todos (APIView):
             todo = TodoSerializer (request.data)
             return Response (todo.data, status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
-          
+    
+    def delete (self, request, pk):
+        if pk:
+            tos = Todo.objects.get
+            todo = TodoSerializer (request.data, instance = tos)
+            todo.delete()
+            return Response (status = status.HTTP_200_OK)
+        elif:
+            todo = TodoSerializer (request.data)
+            todo.delete()
+            return Response (status = status.HTTP_200_OK)
+        return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
