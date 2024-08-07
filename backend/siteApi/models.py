@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 #user account model
 class User (AbstractUser):
     profile_picture = models.ImageField (null = True, blank = True, upload_to='images')
+    email = models.EmailField (null = False, blank = False, unique = True)
 
     def __str__(self):
         return self.first_name
