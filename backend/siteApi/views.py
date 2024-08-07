@@ -40,7 +40,7 @@ class LoginUser (APIView):
             return Response ('Please provide all required fields', status.HTTP_400_BAD_REQUEST)
         user = authenticate(email = email, password = password)
         if user is not None:
-            refresh_token = RefreshToken.for_user(user.validated_data)
+            refresh_token = RefreshToken.for_user(user)
             refresh_token.set_exp(lifetime = timedelta(hours = 1))
             return Response({
                 'refresh': str(refresh_token),
