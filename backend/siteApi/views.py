@@ -50,6 +50,8 @@ class LoginUser (APIView):
     
 #todo
 class Todos (APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get (self, request, pk):
         if pk:
             tos = Todo.objects.get (pk = pk)
