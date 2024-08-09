@@ -1,6 +1,8 @@
 import React from "react";
 import useDelete from "./custom_hook/deleting";
 
+apiUrl = "http://127.0.0.1:8000/todo/<int:id>/";
+
 const DeleteButton = ({ apiUrl, id }) => {
   const { deleteItem, loading, error, success } = useDelete(apiUrl);
 

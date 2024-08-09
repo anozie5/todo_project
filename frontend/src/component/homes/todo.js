@@ -45,7 +45,7 @@ export const CreateTodo = () => {
 // updating todo
 export const UpdateTodo = () => {
   const { formData, handleChange, handleSubmit, loading, error, success } =
-    useFormHandler("http://127.0.0.1:8000/todo/<int:pk>/", "PUT");
+    useFormHandler("http://127.0.0.1:8000/todo/<int:id>/", "PUT");
 
   return (
     <form onSubmit={handleSubmit}>
