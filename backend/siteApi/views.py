@@ -56,12 +56,12 @@ class Todos (APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def get (self, request, pk):
-        if pk != None:
-            tos = Todo.objects.get (pk = pk)
+    def get (self, request, id):
+        if id != None:
+            tos = Todo.objects.get (pk = id)
             todo = TodoSerializer (instance = tos)
             return Response (todo.data, status = status.HTTP_200_OK)
-        elif pk == None:
+        elif id == None:
             tos = Todo.objects.all()
             todo = TodoSerializer (tos, many = True)
             return Response (todo.data, status = status.HTTP_200_OK)
@@ -74,21 +74,21 @@ class Todos (APIView):
             return Response ('Todo created', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    def put (self, request, pk):
-        tos = Todo.objects.get (pk = pk)
+    def put (self, request, id):
+        tos = Todo.objects.get (pk = id)
         todo = TodoSerializer (request.data, instance = tos)
         if todo.is_valid():
             todo.save()
             return Response ('Todo updated', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    def delete (self, request, pk):
-        if pk != None:
-            tos = Todo.objects.get (pk = pk)
+    def delete (self, request, id):
+        if id != None:
+            tos = Todo.objects.get (pk = id)
             todo = TodoSerializer (request.data, instance = tos)
             todo.delete()
             return Response (status = status.HTTP_200_OK)
-        elif pk == None:
+        elif id == None:
             todo = TodoSerializer (request.data)
             todo.delete()
             return Response (status = status.HTTP_200_OK)
