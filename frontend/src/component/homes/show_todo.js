@@ -1,7 +1,7 @@
 import React from "react";
 import useFetchData from "./custom_hooks/fetching";
 import { Link } from "react-router-dom";
-import { CreateTodo, UpdateTodo } from "./todo";
+import { UpdateTodo } from "./todo";
 import DeleteButton from "./delete_todo";
 
 const TodoDisplay = () => {
