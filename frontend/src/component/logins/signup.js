@@ -12,7 +12,7 @@ const SignupForm = () => {
   });
 
   const { signup, loading, error, success } = useSignup(
-    "http://127.0.0.1:8000/"
+    "http://127.0.0.1:8000/signup/"
   );
 
   const handleChange = (e) => {

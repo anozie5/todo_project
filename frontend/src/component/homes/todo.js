@@ -14,7 +14,7 @@ export const CreateTodo = () => {
           <input
             type="text"
             name="title"
-            value={formData.title || ""}
+            value={formData.title}
             onChange={handleChange}
           />
         </label>
@@ -25,7 +25,7 @@ export const CreateTodo = () => {
           <input
             type="text"
             name="body"
-            value={formData.body || ""}
+            value={formData.body}
             onChange={handleChange}
           />
         </label>
@@ -55,7 +55,7 @@ export const UpdateTodo = () => {
           <input
             type="text"
             name="title"
-            value={formData.title || ""}
+            value={formData.title}
             onChange={handleChange}
           />
         </label>
@@ -66,7 +66,7 @@ export const UpdateTodo = () => {
           <input
             type="text"
             name="body"
-            value={formData.body || ""}
+            value={formData.body}
             onChange={handleChange}
           />
         </label>

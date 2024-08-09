@@ -7,9 +7,7 @@ const LoginForm = () => {
     password: "",
   });
 
-  const { login, loading, error, success } = useLogin(
-    "http://127.0.0.1:8000/login/"
-  );
+  const { login, loading, error, success } = useLogin("http://127.0.0.1:8000/");
 
   const handleChange = (e) => {
     setFormData({
