@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import useSignup from "./custom_hooks/signing";
+import useSignup from "../custom_hooks/signing";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const SignupForm = () => {
     password: "",
     profile_picture: "",
   });
+
+  const navigate = useNavigate();
 
   const { signup, loading, error, success } = useSignup(
     "http://127.0.0.1:8000/signup/"
@@ -25,6 +28,7 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signup(formData);
+    navigate("/");
   };
 
   return (

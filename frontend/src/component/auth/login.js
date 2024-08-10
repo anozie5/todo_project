@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import useLogin from "./custom_hooks/loggingin";
+import useLogin from "../custom_hooks/loggingin";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const LoginForm = () => {
   });
 
   const { login, loading, error, success } = useLogin("http://127.0.0.1:8000/");
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,6 +22,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(formData);
+    navigate("/todo");
   };
 
   return (

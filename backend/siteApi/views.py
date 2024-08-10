@@ -43,7 +43,7 @@ class LoginUser (APIView):
         user = authenticate(request, username = username, password = password)
         if user is not None:
             refresh_token = RefreshToken.for_user(user)
-#            refresh_token.set_exp(lifetime = timedelta(hours = 1))
+            refresh_token.set_exp(lifetime = timedelta(hours = 1))
             return Response({
                 "refresh": str(refresh_token),
                 "access": str(refresh_token.access_token),

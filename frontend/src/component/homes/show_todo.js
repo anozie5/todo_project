@@ -1,8 +1,6 @@
 import React from "react";
-import useFetchData from "./custom_hooks/fetching";
+import useFetchData from "../custom_hooks/fetching";
 import { Link } from "react-router-dom";
-import { UpdateTodo } from "./todo";
-import DeleteButton from "./delete_todo";
 
 const TodoDisplay = () => {
   const { data, loading, error } = useFetchData("http://127.0.0.1:8000/todo/");
@@ -20,14 +18,16 @@ const TodoDisplay = () => {
               <ul>{item.title}</ul>
               <ul>{item.body}</ul>
               <ul>{item.updated_on}</ul>
-              <div>
-                <Link to="./todo" component={UpdateTodo}>
-                  Update
-                </Link>
-                <Link to="./delete_todo" component={DeleteButton}>
-                  Delete
-                </Link>
-              </div>
+              <ul>
+                <div>
+                  <span>
+                    <Link to="./todo/update"> Update </Link>
+                  </span>
+                  <span>
+                    <Link to="./todo/delete">Delete</Link>
+                  </span>
+                </div>
+              </ul>
             </li>
           ))}
       </ul>

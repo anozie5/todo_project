@@ -1,5 +1,6 @@
 // for creating and updating todo
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const useFormHandler = (apiUrl, method = "POST") => {
@@ -7,6 +8,8 @@ const useFormHandler = (apiUrl, method = "POST") => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -65,6 +68,7 @@ const useFormHandler = (apiUrl, method = "POST") => {
       });
 
       setSuccess(true);
+      navigate("/todo");
     } catch (err) {
       if (!axios.isCancel(err)) {
         setError(err.response?.data?.detail || err.message);

@@ -8,13 +8,7 @@ const useLogout = (apiUrl) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  const logout = async () => {
+  const Logout = async () => {
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -43,9 +37,15 @@ const useLogout = (apiUrl) => {
     } finally {
       setLoading(false);
     }
+
+    useEffect(() => {
+      return () => {
+        controller.abort();
+      };
+    }, []);
   };
 
-  return { logout, loading, error };
+  return { Logout, loading, error };
 };
 
 export default useLogout;

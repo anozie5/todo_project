@@ -1,5 +1,5 @@
 import React from "react";
-import useFormHandler from "./custom_hooks/updating";
+import useFormHandler from "../custom_hooks/updating";
 
 // creating todo
 export const CreateTodo = () => {
@@ -23,7 +23,7 @@ export const CreateTodo = () => {
         <label>
           Body:
           <input
-            type="text"
+            type="textarea"
             name="body"
             value={formData.body}
             onChange={handleChange}
