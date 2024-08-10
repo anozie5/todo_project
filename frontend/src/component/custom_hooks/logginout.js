@@ -26,7 +26,7 @@ const useLogout = (apiUrl) => {
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        navigate("/login");
+        navigate("/");
       } else {
         throw new Error("Logout failed");
       }

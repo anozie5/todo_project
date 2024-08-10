@@ -26,9 +26,7 @@ function App() {
         <Route path="/todo/delete" element={<DeleteButton />} />
         <Route path="/logout" element={<LogoutButton />} />
       </Routes>
-      <div className="App">
-        <LoginForm />
-      </div>
+      <div className="App"></div>
     </Rou>
   );
 }

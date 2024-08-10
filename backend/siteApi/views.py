@@ -7,12 +7,14 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Create your views here.
 #user creation
 class CreateUser (APIView):
+    permission_classes = [AllowAny]
+    
     def get (self, request):
         users = User.objects.all()
         use = UserCreationSerializer (users, many = True)
@@ -21,8 +23,8 @@ class CreateUser (APIView):
     def post (self, request):
         new_user = UserCreationSerializer (data = request.data)
         if new_user.is_valid():
-                new_user.save()
-                refresh = RefreshToken.for_user(new_user)
+                newuser = new_user.save()
+                refresh = RefreshToken.for_user(newuser)
                 return Response({
                     "refresh": str(refresh),
                     "access": str(refresh.access_token),
@@ -32,14 +34,15 @@ class CreateUser (APIView):
     
 #user login
 class LoginUser (APIView):
+    permission_classes = [AllowAny]
     def post (self, request):
-        user = UserLoginSerializer (data = request.data)
-        if not user.is_valid():
+        users = UserLoginSerializer (data = request.data)
+        if not users.is_valid():
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
-        username = user.validated_data.get("username")
-        password = user.validated_data.get("password")
+        username = users.validated_data.get("username")
+        password = users.validated_data.get("password")
         if not username and not password:
-            return Response ("Please provide all required fields", status.HTTP_400_BAD_REQUEST)
+            return Response ("Please provpke all required fields", status.HTTP_400_BAD_REQUEST)
         user = authenticate(request, username = username, password = password)
         if user is not None:
             refresh_token = RefreshToken.for_user(user)
@@ -48,20 +51,20 @@ class LoginUser (APIView):
                 "refresh": str(refresh_token),
                 "access": str(refresh_token.access_token),
             }, status = status.HTTP_200_OK)
-        return Response(user.errors, status = status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid username or password."}, status=status.HTTP_401_UNAUTHORIZED)
     
     
 #todo
 class Todos (APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
     
-    def get (self, request, id):
-        if id != None:
-            tos = Todo.objects.get (pk = id)
-            todo = TodoSerializer (instance = tos)
-            return Response (todo.data, status = status.HTTP_200_OK)
-        elif id == None:
+    def get (self, request, pk):
+        if request.method == "GET":
+        # pk != None:
+        #     tos = Todo.objects.get (pk = pk)
+        #     todo = TodoSerializer (instance = tos)
+        #     return Response (todo.data, status = status.HTTP_200_OK)
+        # elif pk == None:
             tos = Todo.objects.all()
             todo = TodoSerializer (tos, many = True)
             return Response (todo.data, status = status.HTTP_200_OK)
@@ -74,21 +77,21 @@ class Todos (APIView):
             return Response ('Todo created', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    def put (self, request, id):
-        tos = Todo.objects.get (pk = id)
+    def put (self, request, pk):
+        tos = Todo.objects.get (pk = pk)
         todo = TodoSerializer (request.data, instance = tos)
         if todo.is_valid():
             todo.save()
             return Response ('Todo updated', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    def delete (self, request, id):
-        if id != None:
-            tos = Todo.objects.get (pk = id)
+    def delete (self, request, pk):
+        if pk != None:
+            tos = Todo.objects.get (pk = pk)
             todo = TodoSerializer (request.data, instance = tos)
             todo.delete()
             return Response (status = status.HTTP_200_OK)
-        elif id == None:
+        elif pk == None:
             todo = TodoSerializer (request.data)
             todo.delete()
             return Response (status = status.HTTP_200_OK)
