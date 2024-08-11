@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const useUpdateInstance = (url) => {
+const useUpdate = (url) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
   const isMounted = useRef(true);
 
-  const updateInstance = async (instanceId, updateData) => {
+  const updateform = async (instanceId, updateData) => {
     setLoading(true);
     setError(null);
 
@@ -34,7 +34,7 @@ const useUpdateInstance = (url) => {
     };
   }, []);
 
-  return { updateInstance, loading, error, data };
+  return { updateform, loading, error, data };
 };
 
-export default useUpdateInstance;
+export default useUpdate;

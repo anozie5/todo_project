@@ -1,5 +1,6 @@
-import React from "react";
-import useFormHandler from "../custom_hooks/creating";
+import React, { useState } from "react";
+import useFormHandler from "../custom_hooks/create_function";
+import useUpdate from "../custom_hooks/update_function";
 
 // creating todo
 export const CreateTodo = () => {
@@ -43,11 +44,8 @@ export const CreateTodo = () => {
 };
 
 // updating todo
-import React, { useState } from "react";
-import useUpdateInstance from "./useUpdateInstance";
-
-export const UpdateInstanceComponent = ({ instanceId }) => {
-  const { updateInstance, loading, error, data } = useUpdateInstance(
+export const UpdateTodo = ({ instanceId }) => {
+  const { update, loading, error, data } = useUpdate(
     "http://127.0.0.1:8000/todo/<int:pk>/"
   );
   const [formData, setFormData] = useState({ title: "", body: "" });
@@ -59,7 +57,7 @@ export const UpdateInstanceComponent = ({ instanceId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateInstance(instanceId, formData);
+    updateform(instanceId, formData);
   };
 
   return (
@@ -67,7 +65,7 @@ export const UpdateInstanceComponent = ({ instanceId }) => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="titl"
+          name="title"
           value={formData.title}
           onChange={handleChange}
           placeholder="Title"

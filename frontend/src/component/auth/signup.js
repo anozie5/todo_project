@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useSignup from "../custom_hooks/signing";
+import useSignup from "../custom_hooks/signup_function";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
