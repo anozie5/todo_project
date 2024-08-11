@@ -7,14 +7,14 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Create your views here.
 #user creation
 class CreateUser (APIView):
     permission_classes = [AllowAny]
-    
+
     def get (self, request):
         users = User.objects.all()
         use = UserCreationSerializer (users, many = True)
@@ -23,35 +23,45 @@ class CreateUser (APIView):
     def post (self, request):
         new_user = UserCreationSerializer (data = request.data)
         if new_user.is_valid():
-                newuser = new_user.save()
+            newuser = new_user.save()
+            try:
                 refresh = RefreshToken.for_user(newuser)
                 return Response({
                     "refresh": str(refresh),
                     "access": str(refresh.access_token),
-                    }, "New user created", status=status.HTTP_201_CREATED)
+                    "message": "New user created",
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"detail": "Error generating tokens."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(new_user.errors, status = status.HTTP_400_BAD_REQUEST)
 
     
 #user login
 class LoginUser (APIView):
     permission_classes = [AllowAny]
+
     def post (self, request):
         users = UserLoginSerializer (data = request.data)
         if not users.is_valid():
-            return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(users.errors, status=status.HTTP_400_BAD_REQUEST)
         username = users.validated_data.get("username")
         password = users.validated_data.get("password")
-        if not username and not password:
-            return Response ("Please provpke all required fields", status.HTTP_400_BAD_REQUEST)
+        if not username or not password:
+            return Response ("Please provide all required fields", status = status.HTTP_400_BAD_REQUEST)
         user = authenticate(request, username = username, password = password)
         if user is not None:
-            refresh_token = RefreshToken.for_user(user)
-            refresh_token.set_exp(lifetime = timedelta(hours = 1))
-            return Response({
-                "refresh": str(refresh_token),
-                "access": str(refresh_token.access_token),
-            }, status = status.HTTP_200_OK)
-        return Response({"detail": "Invalid username or password."}, status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                refresh_token = RefreshToken.for_user(user)
+                refresh_token.set_exp(lifetime=timedelta(hours=1))
+                return Response({
+                    "refresh": str(refresh_token),
+                    "access": str(refresh_token.access_token),
+                    "message": "Login successful",
+                }, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"detail": "Error generating tokens."}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({"detail": "Invalid username or password."}, status = status.HTTP_401_UNAUTHORIZED)
     
     
 #todo

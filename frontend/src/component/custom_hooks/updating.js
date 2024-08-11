@@ -1,88 +1,40 @@
-// for creating and updating todo
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const useFormHandler = (apiUrl, method = "POST") => {
-  const [formData, setFormData] = useState({});
+const useUpdateInstance = (url) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [data, setData] = useState(null);
 
-  const navigate = useNavigate();
+  const isMounted = useRef(true);
 
-  const fetchData = useCallback(async () => {
+  const updateInstance = async (instanceId, updateData) => {
     setLoading(true);
     setError(null);
 
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     try {
-      const response = await axios.get(apiUrl, { signal });
-      setFormData(response.data);
+      const response = await axios.put(`${url}/${instanceId}/`, updateData);
+      if (isMounted.current) {
+        setData(response.data);
+      }
     } catch (err) {
-      if (!axios.isCancel(err)) {
-        setError(err.response?.data?.detail || err.message);
+      if (isMounted.current) {
+        setError(err.response ? err.response.data : "Something went wrong");
       }
     } finally {
-      setLoading(false);
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
-
-    return () => {
-      controller.abort();
-    };
-  }, [apiUrl]);
+  };
 
   useEffect(() => {
-    const cleanup = fetchData();
-    return () => cleanup();
-  }, [fetchData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    try {
-      const response = await axios({
-        method: method, // POST, PUT, or PATCH
-        url: apiUrl,
-        data: formData,
-        signal,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      setSuccess(true);
-      navigate("/todo");
-    } catch (err) {
-      if (!axios.isCancel(err)) {
-        setError(err.response?.data?.detail || err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-
     return () => {
-      controller.abort();
+      isMounted.current = false;
     };
-  };
+  }, []);
 
-  return { formData, handleChange, handleSubmit, loading, error, success };
+  return { updateInstance, loading, error, data };
 };
 
-export default useFormHandler;
+export default useUpdateInstance;
