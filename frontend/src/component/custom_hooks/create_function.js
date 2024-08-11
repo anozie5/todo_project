@@ -1,4 +1,4 @@
-// for creating and updating todo
+// for creating Todo
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,32 +11,34 @@ const useFormHandler = (apiUrl, method = "POST") => {
 
   const navigate = useNavigate();
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const fetchData = useCallback(
+    async (signal) => {
+      setLoading(true);
+      setError(null);
 
+      try {
+        const response = await axios.get(apiUrl, { signal });
+        setFormData(response.data);
+      } catch (err) {
+        if (!axios.isCancel(err)) {
+          setError(err.response?.data?.detail || err.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [apiUrl]
+  );
+
+  useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    try {
-      const response = await axios.get(apiUrl, { signal });
-      setFormData(response.data);
-    } catch (err) {
-      if (!axios.isCancel(err)) {
-        setError(err.response?.data?.detail || err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
+    fetchData(signal);
 
     return () => {
       controller.abort();
     };
-  }, [apiUrl]);
-
-  useEffect(() => {
-    const cleanup = fetchData();
-    return () => cleanup();
   }, [fetchData]);
 
   const handleChange = (e) => {
@@ -45,6 +47,7 @@ const useFormHandler = (apiUrl, method = "POST") => {
       ...prevData,
       [name]: value,
     }));
+    setSuccess(false);
   };
 
   const handleSubmit = async (e) => {
@@ -58,7 +61,7 @@ const useFormHandler = (apiUrl, method = "POST") => {
 
     try {
       const response = await axios({
-        method: method, // POST, PUT, or PATCH
+        method: method,
         url: apiUrl,
         data: formData,
         signal,
@@ -78,7 +81,7 @@ const useFormHandler = (apiUrl, method = "POST") => {
     }
 
     return () => {
-      controller.abort();
+      controller.abort(); // This return is not needed here
     };
   };
 
