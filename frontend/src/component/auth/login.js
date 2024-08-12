@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useLogin from "../custom_hooks/login_function";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,6 @@ const LoginForm = () => {
   });
 
   const { login, loading, error, success } = useLogin("http://127.0.0.1:8000/");
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,7 +22,10 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(formData);
-    navigate("/todo");
+
+    if (success) {
+      navigate("/todo");
+    }
   };
 
   return (
@@ -51,6 +54,7 @@ const LoginForm = () => {
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>Login successful!</p>}
+      <ToastContainer />
     </div>
   );
 };
