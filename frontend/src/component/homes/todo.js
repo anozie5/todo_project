@@ -45,7 +45,7 @@ export const CreateTodo = () => {
 
 // updating todo
 export const UpdateTodo = ({ instanceId }) => {
-  const { update, loading, error, data } = useUpdate(
+  const { updateForm, loading, error, data } = useUpdate(
     "http://127.0.0.1:8000/todo/<int:pk>/"
   );
   const [formData, setFormData] = useState({ title: "", body: "" });

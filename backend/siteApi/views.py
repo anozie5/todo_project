@@ -25,10 +25,11 @@ class CreateUser (APIView):
         use = UserCreationSerializer (users, many = True)
         return Response (use.data, status = status.HTTP_200_OK)
      
-    def post (self, request):
-        new_user = UserCreationSerializer (data = request.data)
+    def post(self, request):
+        new_user = UserCreationSerializer(data = request.data)
         if new_user.is_valid():
             newuser = new_user.save()
+            logger.info(f"User {newuser.username} created successfully.")
             try:
                 refresh = RefreshToken.for_user(newuser)
                 access_token = AccessToken.for_user(newuser)
@@ -38,13 +39,16 @@ class CreateUser (APIView):
 
                 return Response({
                     "refresh": str(refresh),
-                    "access": str(refresh.access_token),
+                    "access": str(access_token),
                     "message": "New user created",
                 }, status=status.HTTP_201_CREATED)
             except Exception as e:
-                logger.error(f"Error generating tokens for user {newuser.username}: {str(e)}")
-                return Response({"detail": "Error generating tokens."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(new_user.errors, status = status.HTTP_400_BAD_REQUEST)
+                logger.error(f"Error generating tokens for user {newuser.username}: {str(e)}", exc_info=True)
+                return Response({"detail": "Error generating tokens. Please check the logs."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            logger.warning(f"User creation failed: {new_user.errors}")
+        return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     
 #user login

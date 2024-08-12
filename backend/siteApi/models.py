@@ -12,7 +12,7 @@ class User (AbstractUser):
     
 #for token handling
 class Token(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField("siteApi.User", on_delete=models.CASCADE)
     refresh_token = models.TextField()
     
 #todo model
