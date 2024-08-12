@@ -8,7 +8,7 @@ const useUpdate = (url) => {
 
   const isMounted = useRef(true);
 
-  const updateform = async (instanceId, updateData) => {
+  const updateForm = async (instanceId, updateData) => {
     setLoading(true);
     setError(null);
 
@@ -34,7 +34,7 @@ const useUpdate = (url) => {
     };
   }, []);
 
-  return { updateform, loading, error, data };
+  return { updateForm, loading, error, data };
 };
 
 export default useUpdate;

@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const useFormHandler = (apiUrl, method = "POST") => {
+const useCreate = (apiUrl, method = "POST") => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -81,11 +81,11 @@ const useFormHandler = (apiUrl, method = "POST") => {
     }
 
     return () => {
-      controller.abort(); // This return is not needed here
+      controller.abort();
     };
   };
 
   return { formData, handleChange, handleSubmit, loading, error, success };
 };
 
-export default useFormHandler;
+export default useCreate;

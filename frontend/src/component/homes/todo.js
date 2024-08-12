@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import useFormHandler from "../custom_hooks/create_function";
+import useCreate from "../custom_hooks/create_function";
 import useUpdate from "../custom_hooks/update_function";
 
 // creating todo
 export const CreateTodo = () => {
   const { formData, handleChange, handleSubmit, loading, error, success } =
-    useFormHandler("http://127.0.0.1:8000/todo/", "POST");
+    useCreate("http://127.0.0.1:8000/todo/", "POST");
 
   return (
     <form onSubmit={handleSubmit}>
@@ -57,7 +57,7 @@ export const UpdateTodo = ({ instanceId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateform(instanceId, formData);
+    updateForm(instanceId, formData);
   };
 
   return (
@@ -72,7 +72,7 @@ export const UpdateTodo = ({ instanceId }) => {
           required
         />
         <input
-          type="text"
+          type="textarea"
           name="body"
           value={formData.body}
           onChange={handleChange}
