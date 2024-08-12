@@ -9,7 +9,7 @@ const SignupForm = () => {
     username: "",
     email: "",
     password: "",
-    profile_picture: "",
+    profile_picture: null,
   });
 
   const navigate = useNavigate();
@@ -19,16 +19,19 @@ const SignupForm = () => {
   );
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type, files } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "file" ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signup(formData);
-    navigate("/");
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (

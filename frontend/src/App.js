@@ -11,7 +11,7 @@ import { CreateTodo, UpdateTodo } from "./component/homes/todo";
 import DeleteButton from "./component/homes/delete_todo";
 import TodoDisplay from "./component/homes/show_todo";
 import LoginForm from "./component/auth/login";
-import LogoutButton from "./component/auth/logout";
+import Logout from "./component/auth/logout";
 import SignupForm from "./component/auth/signup";
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
         <Route path="/todo/create" element={<CreateTodo />} />
         <Route path="/todo/update" element={<UpdateTodo />} />
         <Route path="/todo/delete" element={<DeleteButton />} />
-        <Route path="/logout" element={<LogoutButton />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
       <div className="App"></div>
     </Rou>

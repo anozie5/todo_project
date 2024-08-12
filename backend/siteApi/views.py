@@ -1,4 +1,7 @@
+import datetime
+import logging
 from datetime import timedelta
+from django.conf import settings
 from django.shortcuts import render
 from siteApi.models import *
 from siteApi.serializers import *
@@ -6,11 +9,13 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Create your views here.
+
+logger = logging.getLogger(__name__)
 #user creation
 class CreateUser (APIView):
     permission_classes = [AllowAny]
@@ -26,12 +31,18 @@ class CreateUser (APIView):
             newuser = new_user.save()
             try:
                 refresh = RefreshToken.for_user(newuser)
+                access_token = AccessToken.for_user(newuser)
+                access_token.set_exp(datetime.datetime.utcnow() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_LIFETIME))
+
+                Token.objects.update_or_create(user=newuser, defaults={'refresh_token': str(refresh)})
+
                 return Response({
                     "refresh": str(refresh),
                     "access": str(refresh.access_token),
                     "message": "New user created",
                 }, status=status.HTTP_201_CREATED)
             except Exception as e:
+                logger.error(f"Error generating tokens for user {newuser.username}: {str(e)}")
                 return Response({"detail": "Error generating tokens."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(new_user.errors, status = status.HTTP_400_BAD_REQUEST)
 

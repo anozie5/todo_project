@@ -1,17 +1,30 @@
 import React from "react";
 import useLogout from "../custom_hooks/logout_function";
+import { useNavigate } from "react-router-dom";
 
-const LogoutButton = () => {
-  const { logout, loading, error } = useLogout("http://127.0.0.1:8000/todo/");
+const Logout = () => {
+  const { logout, loading, error, success } = useLogout(
+    "http://127.0.0.1:8000/"
+  );
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    if (success) {
+      navigate("/");
+    }
+  };
 
   return (
     <div>
-      <button onClick={logout} disabled={loading}>
-        {loading ? "Logging out..." : "Logout"}
+      <h1>Logout</h1>
+      <button onClick={handleLogout} disabled={loading}>
+        {loading ? "Logging out..." : "Log Out"}
       </button>
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>Logout successful!</p>}
     </div>
   );
 };
 
-export default LogoutButton;
+export default Logout;
