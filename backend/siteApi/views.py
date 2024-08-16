@@ -1,7 +1,4 @@
-import datetime
 import logging
-from datetime import timedelta
-from django.conf import settings
 from django.shortcuts import render
 from siteApi.models import *
 from siteApi.serializers import *
@@ -9,7 +6,7 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -30,21 +27,6 @@ class CreateUser (APIView):
         if new_user.is_valid():
             newuser = new_user.save()
             logger.info(f"User {newuser.username} created successfully.")
-            try:
-                refresh = RefreshToken.for_user(newuser)
-                access_token = AccessToken.for_user(newuser)
-                access_token.set_exp(datetime.datetime.utcnow() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_LIFETIME))
-
-                Token.objects.update_or_create(user=newuser, defaults={'refresh_token': str(refresh)})
-
-                return Response({
-                    "refresh": str(refresh),
-                    "access": str(access_token),
-                    "message": "New user created",
-                }, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                logger.error(f"Error generating tokens for user {newuser.username}: {str(e)}", exc_info=True)
-                return Response({"detail": "Error generating tokens. Please check the logs."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             logger.warning(f"User creation failed: {new_user.errors}")
         return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -67,13 +49,13 @@ class LoginUser (APIView):
         if user is not None:
             try:
                 refresh_token = RefreshToken.for_user(user)
-                refresh_token.set_exp(lifetime=timedelta(hours=1))
                 return Response({
                     "refresh": str(refresh_token),
                     "access": str(refresh_token.access_token),
                     "message": "Login successful",
                 }, status=status.HTTP_200_OK)
             except Exception as e:
+                logger.warning(f"Error generating tokens for user {username}: {str(e)}", exc_info=True)
                 return Response({"detail": "Error generating tokens."}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"detail": "Invalid username or password."}, status = status.HTTP_401_UNAUTHORIZED)
@@ -84,12 +66,11 @@ class Todos (APIView):
     authentication_classes = [JWTAuthentication]
     
     def get (self, request, pk):
-        if request.method == "GET":
-        # pk != None:
-        #     tos = Todo.objects.get (pk = pk)
-        #     todo = TodoSerializer (instance = tos)
-        #     return Response (todo.data, status = status.HTTP_200_OK)
-        # elif pk == None:
+        if pk != None:
+            tos = Todo.objects.get (pk = pk)
+            todo = TodoSerializer (instance = tos)
+            return Response (todo.data, status = status.HTTP_200_OK)
+        elif pk == None:
             tos = Todo.objects.all()
             todo = TodoSerializer (tos, many = True)
             return Response (todo.data, status = status.HTTP_200_OK)

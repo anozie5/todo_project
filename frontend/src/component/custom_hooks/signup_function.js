@@ -24,8 +24,6 @@ const useSignup = (url) => {
         },
       });
 
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
       setSuccess(true);
     } catch (err) {
       setError(err.response?.data?.detail || "Sign up failed");

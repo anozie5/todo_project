@@ -9,12 +9,8 @@ class User (AbstractUser):
     
     def __str__(self):
         return self.first_name
-    
-#for token handling
-class Token(models.Model):
-    user = models.OneToOneField("siteApi.User", on_delete=models.CASCADE)
-    refresh_token = models.TextField()
-    
+
+
 #todo model
 class Todo (models.Model):
     title = models.ForeignKey (User, on_delete = models.CASCADE, max_length = 15)
