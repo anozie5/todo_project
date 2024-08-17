@@ -6,9 +6,9 @@ from siteApi.models import *
 class UserCreationSerializer (serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "username", "email", "password", "profile_picture"]
+        fields = ["first_name", "last_name", "username", "email", "password"]
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True, 'min_length': 8}
         }
 
 # user login
