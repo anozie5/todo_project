@@ -34,6 +34,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 # remove this and change CORS_ORIGIN_ALLOW_ALL to true when uploading
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React app running locally
+    "http://127.0.0.1:3000",
 ]
 
 
@@ -205,12 +206,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'your_app_name': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': False,
         },

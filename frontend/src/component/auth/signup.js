@@ -66,11 +66,11 @@ const SignupForm = () => {
         />
         {errors.password && <p>{errors.password.message}</p>}
 
-        {/* <input
+        <input
           type="file"
           {...register("profile_picture")}
           onChange={handleFileChange}
-        /> */}
+        />
 
         <button type="submit" disabled={loading}>
           {loading ? "Signing up..." : "Sign Up"}
