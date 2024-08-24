@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+
 # Create your views here.
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class CreateUser (APIView):
         if new_user.is_valid():
             newuser = new_user.save()
             logger.info(f"User {newuser.username} created successfully.")
+            return Response (f"{newuser.username}'s account succefully created")
         else:
             logger.warning(f"User creation failed: {new_user.errors}")
         return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
