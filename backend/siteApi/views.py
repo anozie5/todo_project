@@ -18,7 +18,7 @@ class CreateUser (generics.CreateAPIView):
 
     permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)  # Validate incoming data
         user = serializer.save()  # Call create method in the serializer
