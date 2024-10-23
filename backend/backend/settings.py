@@ -29,28 +29,32 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # corsheader configurations
-CORS_ORIGIN_ALLOW_ALL = False
 
-# remove this and change CORS_ORIGIN_ALLOW_ALL to true when uploading
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React app running locally
-    "http://127.0.0.1:3000",
-]
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ORIGIN_ALLOW_ALL = False
+
+# # remove this and change CORS_ORIGIN_ALLOW_ALL to true when uploading
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React app running locally
+#     "http://127.0.0.1:3000",
+# ]
 
 
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-]
+# CORS_ALLOW_METHODS = [
+#     "GET",
+#     "POST",
+#     "PUT",
+#     "PATCH",
+#     "DELETE",
+#     "OPTIONS",
+# ]
 
-CORS_ALLOW_HEADERS = [
-    "content-type",
-    "authorization",
-]
+# CORS_ALLOW_HEADERS = [
+#     "content-type",
+#     "authorization",
+# ]
 
 
 # Application definition
@@ -83,9 +87,9 @@ ROOT_URLCONF = 'backend.urls'
 
 # settings for rest_framework and JWT
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ],
+    ),
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -95,36 +99,30 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 import os
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'RS256',
-    'SIGNING_KEY': os.environ.get('SECRET_KEY'),
-    'VERIFYING_KEY': None,
-
-    'AUDIENCE': None,
-    'ISSUER': None,
-}
 # SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes = 5),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days = 1),
-#     'ROTATE_REFRESH_TOKENS': True,    
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=3_000_000),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=2_500_000),
+#     'ROTATE_REFRESH_TOKENS': True,
 #     'BLACKLIST_AFTER_ROTATION': True,
-#     'UPDATE_LAST_LOGIN': True,
+#     # 'UPDATE_LAST_LOGIN': False,
 
 #     'ALGORITHM': 'HS256',
 #     'SIGNING_KEY': SECRET_KEY,
 #     'VERIFYING_KEY': None,
+#     'AUDIENCE': None,
+#     'ISSUER': None,
+#     # 'JWK_URL': None,
+#     'LEEWAY': 0,
 
-#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'AUTH_HEADER_TYPES': ('Bearer','JWT'),
+#     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
 #     'USER_ID_FIELD': 'id',
 #     'USER_ID_CLAIM': 'user_id',
+#     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
 #     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 #     'TOKEN_TYPE_CLAIM': 'token_type',
+#     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 
 #     'JTI_CLAIM': 'jti',
 
@@ -132,6 +130,31 @@ SIMPLE_JWT = {
 #     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
 #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 # }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes = 5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days = 1),
+    'ROTATE_REFRESH_TOKENS': True,    
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -179,44 +202,44 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # config for logging
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django.log'),
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'your_app_name': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple',
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'django.log'),
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'your_app_name': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 
