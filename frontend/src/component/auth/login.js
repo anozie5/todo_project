@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useLogin from "../custom_hooks/login_function";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 //import { ToastContainer } from "react-toastify";
 
 const LoginForm = () => {
@@ -10,13 +10,19 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate();
-  const { login, loading, error } = useLogin("http://127.0.0.1:8000/");
+  // const navigate = useNavigate();
+  const { login, fetchProtectedData, loading, error } = useLogin(
+    "http://127.0.0.1:8000/login/"
+  );
 
   const onSubmit = async (formData) => {
     const success = await login(formData);
     if (success) {
-      navigate("/todo");
+      const data = await fetchProtectedData("http://127.0.0.1:8000/todo/");
+      console.log("Protected Data:", data);
+
+      // you can undo this
+      // navigate("/todo");
     }
   };
 

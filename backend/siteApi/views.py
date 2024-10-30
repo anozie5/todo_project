@@ -65,12 +65,12 @@ class LoginUser (TokenObtainPairView):
 class Todos (APIView):
     authentication_classes = [JWTAuthentication]
     
-    def get (self, request, pk):
-        if pk != None:
+    def get (self, request, pk=None):
+        if pk is not None:
             tos = Todo.objects.get(pk = pk)
             todo = TodoSerializer(instance = tos)
             return Response(todo.data, status = status.HTTP_200_OK)
-        elif pk == None:
+        elif pk is None:
             tos = Todo.objects.all()
             todo = TodoSerializer(tos, many = True)
             return Response(todo.data, status = status.HTTP_200_OK)
@@ -91,12 +91,12 @@ class Todos (APIView):
             return Response('Todo updated', status = status.HTTP_200_OK)
         return Response(todo.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    def delete (self, request, pk):
-        if pk != None:
+    def delete (self, request, pk=None):
+        if pk is not None:
             tos = Todo.objects.get(pk = pk)
             tos.delete()
             return Response(status = status.HTTP_200_OK)
-        elif pk == None:
+        elif pk is None:
             tos = Todo.objects.all()
             tos.delete()
             return Response(status = status.HTTP_200_OK)

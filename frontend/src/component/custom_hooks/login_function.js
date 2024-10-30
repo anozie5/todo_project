@@ -28,7 +28,34 @@ const useLogin = (url) => {
     }
   };
 
-  return { login, loading, error };
+  // Function to make authenticated requests to protected endpoints
+  const fetchProtectedData = async (apiUrl) => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      setError("No access token available, please login.");
+      return null;
+    }
+
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError("Unauthorized! Token may have expired.");
+        // Optionally, handle token refresh or redirect to login
+      } else {
+        setError("An error occurred while fetching data.");
+      }
+      return null;
+    }
+  };
+
+  return { login, fetchProtectedData, loading, error };
 };
 
 export default useLogin;
